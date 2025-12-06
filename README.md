@@ -15,14 +15,25 @@ Air quality monitoring system continuously measures pollutants and basic environ
 ## Connection Procedure
 
 ESP32 → Sensors
+
 VIN(5V) → MQ2 VCC
+
 3.3V → DHT22 VCC, OLED VCC
+
 GND → All GND
+
 GPIO36 → MQ2 AO (Analog)
+
 GPIO15 → MQ2 DO (Digital)
+
 GPIO4 → DHT22 DATA
+
 GPIO23 → Buzzer +
+
 GPIO19 → Red LED + (220Ω)
+
 GPIO18 → Green LED + (220Ω)
+
 GPIO21 → OLED SDA
+
 GPIO22 → OLED SCL
