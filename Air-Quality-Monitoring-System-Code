@@ -108,23 +108,3 @@ else display.println("GOOD");
 
 display.display();
 }
-
-
-## How It Works
-
-- **Green LED ON** = GOOD AIR QUALITY
-- **Red LED + Buzzer** = POOR AIR QUALITY
-  - Gas > 1200 (Pollutants detected)
-  - Temperature > 35°C (Uncomfortable)
-
-## OLED Shows
-
-Air Quality Monitor
-
-T: 28.5 C
-
-H: 65.2%
-
-AQI: 800
-
-GOOD
