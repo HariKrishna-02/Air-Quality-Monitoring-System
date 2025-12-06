@@ -48,9 +48,13 @@ GPIO22 → OLED SCL
 
 ## OLED Shows
 Air Quality Monitor
+
 T: 28.5 C
+
 H: 65.2%
+
 AQI: 800
+
 GOOD
 
 
