@@ -1,0 +1,130 @@
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+#include <DHT.h>
+
+#define SCREEN_WIDTH 128
+#define SCREEN_HEIGHT 64
+#define OLED_RESET -1
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
+
+#define DHTPIN 4
+#define DHTTYPE DHT22
+DHT dht(DHTPIN, DHTTYPE);
+
+const int MQ2_AO = 36;
+const int MQ2_DO = 15;
+const int BUZZER = 23;
+const int RED_LED = 19;
+const int GREEN_LED = 18;
+
+int mq2AirThresh = 1200; // Air quality threshold
+float tempThresh = 35.0; // Comfort temp
+
+void setup() {
+Serial.begin(115200);
+Wire.begin(21, 22);
+
+pinMode(MQ2_DO, INPUT);
+pinMode(BUZZER, OUTPUT);
+pinMode(RED_LED, OUTPUT);
+pinMode(GREEN_LED, OUTPUT);
+
+digitalWrite(BUZZER, LOW);
+digitalWrite(RED_LED, LOW);
+digitalWrite(GREEN_LED, HIGH);
+
+dht.begin();
+
+if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+Serial.println("OLED init failed");
+while (true);
+}
+
+display.clearDisplay();
+display.setTextSize(1);
+display.setTextColor(SSD1306_WHITE);
+display.setCursor(0, 0);
+display.println("Air Quality Monitor");
+display.display();
+delay(1500);
+
+Serial.println("Air Quality Monitoring System Ready");
+delay(20000); // MQ2 warmup
+}
+
+void loop() {
+float temp = dht.readTemperature();
+float hum = dht.readHumidity();
+
+int gasAnalog = analogRead(MQ2_AO);
+int gasDigital = digitalRead(MQ2_DO);
+
+bool poorAir = (gasAnalog > mq2AirThresh) || (gasDigital == LOW);
+bool hot = (!isnan(temp) && temp > tempThresh);
+
+bool bad = poorAir || hot;
+
+if (bad) {
+digitalWrite(RED_LED, HIGH);
+digitalWrite(GREEN_LED, LOW);
+digitalWrite(BUZZER, HIGH);
+delay(200);
+digitalWrite(BUZZER, LOW);
+delay(200);
+} else {
+digitalWrite(RED_LED, LOW);
+digitalWrite(GREEN_LED, HIGH);
+digitalWrite(BUZZER, LOW);
+delay(500);
+}
+
+// Serial Monitor
+Serial.print("Temp: "); Serial.print(temp);
+Serial.print("C Hum: "); Serial.print(hum);
+Serial.print("% AQI: "); Serial.print(gasAnalog);
+Serial.print(" -> ");
+if (bad) Serial.println("POOR AIR!");
+else Serial.println("GOOD");
+
+// OLED Display
+display.clearDisplay();
+display.setTextSize(1);
+display.setCursor(0, 0);
+display.println("Air Quality Monitor");
+
+display.setCursor(0, 14);
+display.print("T: "); display.print(temp, 1); display.println(" C");
+
+display.setCursor(0, 26);
+display.print("H: "); display.print(hum, 1); display.println(" %");
+
+display.setCursor(0, 38);
+display.print("AQI: "); display.print(gasAnalog);
+
+display.setCursor(0, 50);
+if (bad) display.println("POOR!");
+else display.println("GOOD");
+
+display.display();
+}
+
+
+## How It Works
+
+- **Green LED ON** = GOOD AIR QUALITY
+- **Red LED + Buzzer** = POOR AIR QUALITY
+  - Gas > 1200 (Pollutants detected)
+  - Temperature > 35°C (Uncomfortable)
+
+## OLED Shows
+
+Air Quality Monitor
+
+T: 28.5 C
+
+H: 65.2%
+
+AQI: 800
+
+GOOD
