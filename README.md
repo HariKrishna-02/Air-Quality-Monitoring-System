@@ -37,3 +37,32 @@ GPIO18 → Green LED + (220Ω)
 GPIO21 → OLED SDA
 
 GPIO22 → OLED SCL
+
+
+## How It Works
+
+- **Green LED ON** = GOOD AIR QUALITY
+- **Red LED + Buzzer** = POOR AIR QUALITY
+  - Gas > 1200 (Pollutants detected)
+  - Temperature > 35°C (Uncomfortable)
+
+## OLED Shows
+Air Quality Monitor
+T: 28.5 C
+H: 65.2%
+AQI: 800
+GOOD
+
+
+## Setup Steps
+1. Install Libraries: Adafruit SSD1306, Adafruit GFX, DHT sensor
+2. Connect as shown above
+3. Upload code to ESP32
+4. Power with USB power bank
+5. Wait 20 sec for warmup
+
+## Cost: ₹2200-2800
+## Power: USB Power Bank (8+ hrs)
+
+**By JP Harikrishna Raj**  
+**Embedded & IoT Developer**
